@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using DatingApp.API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.API
@@ -35,13 +28,16 @@ namespace DatingApp.API
             services.AddCors(); //enable Cross-Origin Resource Sharing
             //scoped objects are the same within a request, different across different requests
             services.AddScoped<IAuthRepository, AuthRepository>();
+            //thanks to token authentication server doesn't need to make a db call after a user already logged in to API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        // Token is normally a randomly generated, long set of characters
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.
+                            GetBytes(Configuration.GetSection("AppSettings:Token").Value)), 
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };

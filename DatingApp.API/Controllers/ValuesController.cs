@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DatingApp.API.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -21,6 +21,7 @@ namespace DatingApp.API.Controllers
         }
 
         // GET api/values
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetValues()
         {
